@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VISION GUARD | GLOBAL MONITORING</title>
+    <title>VISION GUARD | NEURAL MONITOR</title>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Bai+Jamjuree:wght@300;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,7 +12,6 @@
             --neon-red: #ff0055;
             --neon-pink: #ff00ff;
             --neon-orange: #ff9d00;
-            --glass: rgba(10, 10, 25, 0.85);
         }
 
         body {
@@ -25,163 +23,165 @@
         #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
 
         .container {
-            max-width: 1200px; margin: auto; padding: 40px 20px;
+            max-width: 1100px; margin: auto; padding: 50px 20px;
             position: relative; z-index: 1;
         }
 
-        /* --- Header --- */
-        header { text-align: center; margin-bottom: 50px; }
+        header { text-align: center; margin-bottom: 60px; }
         h1 {
-            font-size: 3.5rem; letter-spacing: 12px; margin: 0;
+            font-size: 3rem; letter-spacing: 15px; margin: 0;
             background: linear-gradient(to right, #fff, var(--neon-blue), #fff);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(0,242,255,0.4));
+            filter: drop-shadow(0 0 10px rgba(0,242,255,0.5));
         }
 
-        /* --- Hero Stat (The Big One) --- */
-        .hero-stat {
-            background: var(--glass);
-            border: 2px solid rgba(0, 242, 255, 0.2);
-            border-radius: 15px; padding: 60px 20px; text-align: center;
-            margin-bottom: 30px; position: relative;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 0 40px rgba(0, 242, 255, 0.1);
+        /* --- Global Scan (Hero Section) --- */
+        .global-monitor {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 20px; padding: 80px 20px; text-align: center;
+            margin-bottom: 40px; position: relative;
+            backdrop-filter: blur(20px);
+            box-shadow: inset 0 0 50px rgba(0, 242, 255, 0.05);
         }
-        .hero-label { 
-            font-size: 1.2rem; color: var(--neon-blue); letter-spacing: 6px; 
-            margin-bottom: 20px; text-transform: uppercase; font-weight: bold;
-        }
-        .hero-value { 
-            font-size: 7rem; font-weight: 700; color: #fff; 
-            text-shadow: 0 0 40px rgba(0,242,255,0.6);
-            line-height: 1; margin: 15px 0;
-        }
-        .hero-desc { font-family: 'Bai Jamjuree'; color: #888; font-size: 1.2rem; }
 
-        /* --- Stats Grid (3 Boxes Below) --- */
+        .global-monitor::after {
+            content: "GLOBAL INTERCEPTION"; position: absolute;
+            top: 20px; left: 50%; transform: translateX(-50%);
+            font-size: 0.8rem; color: var(--neon-blue); letter-spacing: 10px; opacity: 0.7;
+        }
+
+        .huge-value {
+            font-size: 9rem; font-weight: 700;
+            background: linear-gradient(to bottom, #fff, #888);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 50px rgba(0, 242, 255, 0.4);
+            line-height: 0.8; margin: 20px 0;
+            animation: pulse 4s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.2)); }
+            100% { filter: drop-shadow(0 0 60px rgba(0, 242, 255, 0.6)); }
+        }
+
+        .scan-text { font-family: 'Bai Jamjuree'; font-size: 1.5rem; color: #888; }
+
+        /* --- 3-Grid Stats --- */
         .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px; margin-bottom: 40px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
         }
-        .stat-card {
-            background: var(--glass); border: 1px solid rgba(255,255,255,0.08);
-            padding: 35px 20px; text-align: center; position: relative;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-radius: 10px;
-        }
-        .stat-card:hover { border-color: rgba(255,255,255,0.3); transform: translateY(-8px); }
-        .stat-card .val { font-size: 3rem; font-weight: bold; margin: 10px 0; }
-        .stat-card .lbl { font-size: 0.8rem; color: #777; letter-spacing: 2px; text-transform: uppercase; }
-        .stat-card .desc { font-family: 'Bai Jamjuree'; font-size: 0.9rem; color: #666; }
 
-        /* Scanning Line Animation */
-        .scan-line {
-            position: absolute; width: 100%; height: 3px; background: linear-gradient(to right, transparent, var(--neon-blue), transparent);
-            top: 0; left: 0; opacity: 0.5; animation: scan 3s linear infinite;
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px 20px; text-align: center; border-radius: 10px;
+            transition: 0.4s;
         }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
-        .last-update { text-align: center; font-size: 0.8rem; color: #444; margin-top: 50px; letter-spacing: 3px; }
+        .card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.05); }
+        .card .val { font-size: 3rem; font-weight: bold; margin-bottom: 5px; }
+        .card .lbl { font-size: 0.7rem; letter-spacing: 3px; color: #555; text-transform: uppercase; }
+
+        .sync-status {
+            text-align: center; margin-top: 60px; font-size: 0.7rem;
+            color: #333; letter-spacing: 4px;
+        }
+
+        /* Music Hidden Player */
+        #music-box { position: fixed; bottom: -100px; left: -100px; opacity: 0; }
     </style>
 </head>
 <body>
 
 <div id="particles-js"></div>
 
+<div id="music-box">
+    <iframe id="youtube-player" src="https://www.youtube.com/embed/5WjAbe4Sogc?enablejsapi=1&autoplay=1&loop=1&playlist=5WjAbe4Sogc" allow="autoplay"></iframe>
+</div>
+
 <div class="container">
     <header>
         <h1>VISION GUARD</h1>
-        <div style="font-size: 0.8rem; color: var(--neon-blue); letter-spacing: 5px;">NEURAL INTERCEPTION INTERFACE</div>
+        <div id="connection-indicator" style="color: var(--neon-red); font-size: 0.7rem; margin-top: 10px; letter-spacing: 2px;">● CONNECTING TO CORE</div>
     </header>
 
-    <div class="hero-stat">
-        <div class="scan-line"></div>
-        <div class="hero-label">Global Image Interception</div>
-        <div class="hero-value" id="total_scanned">0</div>
-        <div class="hero-desc">วิเคราะห์รูปภาพแบบจากเครือข่ายทั่วโลก</div>
+    <div class="global-monitor">
+        <div class="huge-value" id="total_scanned">0</div>
+        <div class="scan-text">เราสแกนไปแล้ว <span style="color: #fff;">...</span> รูป จากทั่วโลก</div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card" style="border-bottom: 4px solid var(--neon-red);">
-            <div class="lbl">NSFW Terminated</div>
+        <div class="card" style="border-top: 2px solid var(--neon-red);">
             <div class="val" id="total_deleted" style="color: var(--neon-red);">0</div>
-            <div class="desc">เนื้อหาที่ไม่เหมาะสมถูกทำลายสำเร็จ</div>
+            <div class="lbl">Threats Terminated</div>
         </div>
-
-        <div class="stat-card" style="border-bottom: 4px solid var(--neon-orange);">
-            <div class="lbl">Penis Detections</div>
+        <div class="card" style="border-top: 2px solid var(--neon-orange);">
             <div class="val" id="penis_count" style="color: var(--neon-orange);">0</div>
-            <div class="desc">ตรวจพบประเภทอวัยวะเพศชาย</div>
+            <div class="lbl">Penis Detections</div>
         </div>
-
-        <div class="stat-card" style="border-bottom: 4px solid var(--neon-pink);">
-            <div class="lbl">Pussy Detections</div>
+        <div class="card" style="border-top: 2px solid var(--neon-pink);">
             <div class="val" id="pussy_count" style="color: var(--neon-pink);">0</div>
-            <div class="desc">ตรวจพบประเภทอวัยวะเพศหญิง</div>
+            <div class="lbl">Pussy Detections</div>
         </div>
     </div>
 
-    <div class="last-update">CORE SYNC STATUS: <span id="last_update" style="color: var(--neon-blue);">OFFLINE</span></div>
+    <div class="sync-status">
+        LAST SYNC: <span id="last_update" style="color: #666;">--:--:--</span>
+    </div>
 </div>
 
 <script>
-    // Particles Background
     particlesJS("particles-js", {
         "particles": {
-            "number": { "value": 80 },
+            "number": { "value": 50 },
             "color": { "value": "#00f2ff" },
-            "shape": { "type": "circle" },
             "opacity": { "value": 0.2 },
-            "size": { "value": 2 },
-            "line_linked": { "enable": true, "distance": 150, "color": "#00f2ff", "opacity": 0.1, "width": 1 },
-            "move": { "enable": true, "speed": 1.5 }
+            "size": { "value": 1 },
+            "line_linked": { "enable": true, "distance": 200, "color": "#00f2ff", "opacity": 0.1 }
         }
     });
 
     const DATA_URL = "https://raw.githubusercontent.com/orizonteams-cpu/gobi-vision/main/data.json";
 
-    function animateValue(id, start, end, duration) {
-        const obj = document.getElementById(id);
-        if (start === end) return;
-        const range = end - start;
-        let current = start;
-        const increment = end > start ? Math.ceil(range / (duration / 16)) : -1;
-        const timer = setInterval(() => {
-            current += increment;
-            if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
-                obj.innerText = end.toLocaleString();
-                clearInterval(timer);
-            } else {
-                obj.innerText = current.toLocaleString();
-            }
-        }, 16);
-    }
-
-    let prevData = { total_scanned: 0, total_deleted: 0, penis_count: 0, pussy_count: 0 };
-
-    async function updateDashboard() {
+    async function fetchData() {
         try {
-            const response = await fetch(DATA_URL + "?t=" + Date.now());
-            const data = await response.json();
+            // ป้องกันการจำค่าเก่าด้วย ?nocache=...
+            const res = await fetch(DATA_URL + "?nocache=" + Date.now());
+            if (!res.ok) throw new Error();
+            
+            const data = await res.json();
 
-            animateValue("total_scanned", prevData.total_scanned, data.total_scanned, 1000);
-            animateValue("total_deleted", prevData.total_deleted, data.total_deleted, 1000);
-            animateValue("penis_count", prevData.penis_count, data.penis_count, 1000);
-            animateValue("pussy_count", prevData.pussy_count, data.pussy_count, 1000);
-            
-            document.getElementById('last_update').innerText = data.last_update.toUpperCase();
-            
-            prevData = data;
-        } catch (error) {
-            console.error("System Sync Error", error);
-            document.getElementById('last_update').innerText = "CONNECTION LOST";
+            // อัปเดตตัวเลข
+            document.getElementById('total_scanned').innerText = data.total_scanned.toLocaleString();
+            document.getElementById('total_deleted').innerText = data.total_deleted.toLocaleString();
+            document.getElementById('penis_count').innerText = data.penis_count.toLocaleString();
+            document.getElementById('pussy_count').innerText = data.pussy_count.toLocaleString();
+            document.getElementById('last_update').innerText = data.last_update;
+
+            // อัปเดตสถานะเป็น Online
+            const indicator = document.getElementById('connection-indicator');
+            indicator.innerText = "● CORE SYSTEM ONLINE";
+            indicator.style.color = "#00ff88";
+
+        } catch (e) {
+            console.error("Sync Failed");
+            document.getElementById('connection-indicator').innerText = "● CONNECTION LOST";
+            document.getElementById('connection-indicator').style.color = "#ff0055";
         }
     }
 
-    // Update every 10 seconds
-    setInterval(updateDashboard, 10000);
-    updateDashboard();
-</script>
+    // เริ่มทำงาน
+    setInterval(fetchData, 10000); // เช็คทุก 5 วินาที
+    fetchData();
 
+    // ปลดล็อกเสียงเมื่อมีการคลิกครั้งแรก
+    window.onclick = () => {
+        const player = document.getElementById('youtube-player');
+        player.src += "&play=1";
+        console.log("Audio Unlocked");
+    };
+</script>
 </body>
 </html>
