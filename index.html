@@ -2,78 +2,29 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VISION GUARD | NEURAL MONITOR</title>
+    <title>VISION GUARD | LIVE MONITOR</title>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Bai+Jamjuree:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Bai+Jamjuree&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --neon-blue: #00f2ff;
-            --neon-red: #ff0055;
-            --neon-pink: #ff00ff;
-            --neon-orange: #ff9d00;
-        }
-
-        body {
-            margin: 0; padding: 0; background: #010103;
-            color: #fff; font-family: 'Orbitron', sans-serif;
-            overflow-x: hidden;
-        }
-
+        :root { --neon: #00f2ff; --red: #ff0055; }
+        body { margin: 0; background: #010103; color: #fff; font-family: 'Orbitron', sans-serif; overflow: hidden; }
         #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
-
-        .container {
-            max-width: 1100px; margin: auto; padding: 50px 20px;
-            position: relative; z-index: 1;
+        .container { max-width: 1000px; margin: 80px auto; text-align: center; }
+        
+        /* สไตล์เลข Global Scan ยักษ์ */
+        .big-scan {
+            font-size: 10rem; font-weight: 700; color: #fff;
+            text-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
+            margin: 20px 0; line-height: 1;
         }
-
-        header { text-align: center; margin-bottom: 60px; }
-        h1 {
-            font-size: 3rem; letter-spacing: 15px; margin: 0;
-            background: linear-gradient(to right, #fff, var(--neon-blue), #fff);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(0,242,255,0.5));
-        }
-
-        /* --- Global Scan (Hero Section) --- */
-        .global-monitor {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(0, 242, 255, 0.3);
-            border-radius: 20px; padding: 80px 20px; text-align: center;
-            margin-bottom: 40px; position: relative;
-            backdrop-filter: blur(20px);
-            box-shadow: inset 0 0 50px rgba(0, 242, 255, 0.05);
-        }
-
-        .huge-value {
-            font-size: 9rem; font-weight: 700;
-            background: linear-gradient(to bottom, #fff, #888);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 50px rgba(0, 242, 255, 0.4);
-            line-height: 0.8; margin: 20px 0;
-        }
-
-        .scan-text { font-family: 'Bai Jamjuree'; font-size: 1.5rem; color: #888; }
-
-        /* --- 3-Grid Stats --- */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 40px 20px; text-align: center; border-radius: 10px;
-        }
-
-        .card .val { font-size: 3rem; font-weight: bold; margin-bottom: 5px; }
-        .card .lbl { font-size: 0.7rem; letter-spacing: 3px; color: #555; text-transform: uppercase; }
-
-        .sync-status {
-            text-align: center; margin-top: 60px; font-size: 0.7rem;
-            color: #444; letter-spacing: 4px;
-        }
+        .label { font-size: 1rem; color: var(--neon); letter-spacing: 5px; text-transform: uppercase; }
+        
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 50px; }
+        .card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .card .val { font-size: 2.5rem; display: block; }
+        .card .desc { font-family: 'Bai Jamjuree'; font-size: 0.8rem; color: #666; }
+        
+        #status { font-size: 0.7rem; margin-top: 40px; color: #444; }
     </style>
 </head>
 <body>
@@ -81,108 +32,79 @@
 <div id="particles-js"></div>
 
 <div class="container">
-    <header>
-        <h1>VISION GUARD</h1>
-        <div id="connection-indicator" style="color: var(--neon-red); font-size: 0.7rem; margin-top: 10px; letter-spacing: 2px;">● INITIALIZING...</div>
-    </header>
+    <div class="label">Total Global Intelligence Scanned</div>
+    <div class="big-scan" id="total_scanned">0</div>
+    <div style="font-family: 'Bai Jamjuree'; color: #888;">รูปภาพที่ถูกวิเคราะห์โดยระบบ Gobi-Vision ทั่วโลก</div>
 
-    <div class="global-monitor">
-        <div class="huge-value" id="total_scanned">0</div>
-        <div class="scan-text">เราสแกนไปแล้ว <span style="color: #fff;">...</span> รูป จากทั่วโลก</div>
-    </div>
-
-    <div class="stats-grid">
-        <div class="card" style="border-top: 2px solid var(--neon-red);">
-            <div class="val" id="total_deleted" style="color: var(--neon-red);">0</div>
-            <div class="lbl">Threats Terminated</div>
+    <div class="grid">
+        <div class="card">
+            <span class="val" id="total_deleted" style="color: var(--red);">0</span>
+            <span class="desc">ภัยคุกคามที่ถูกลบ</span>
         </div>
-        <div class="card" style="border-top: 2px solid var(--neon-orange);">
-            <div class="val" id="penis_count" style="color: var(--neon-orange);">0</div>
-            <div class="lbl">Penis Detections</div>
+        <div class="card">
+            <span class="val" id="penis_count" style="color: #ff9d00;">0</span>
+            <span class="desc">ตรวจพบ Penis</span>
         </div>
-        <div class="card" style="border-top: 2px solid var(--neon-pink);">
-            <div class="val" id="pussy_count" style="color: var(--neon-pink);">0</div>
-            <div class="lbl">Pussy Detections</div>
+        <div class="card">
+            <span class="val" id="pussy_count" style="color: #ff00ff;">0</span>
+            <span class="desc">ตรวจพบ Pussy</span>
         </div>
     </div>
 
-    <div class="sync-status">
-        LAST DATA SYNC: <span id="last_update" style="color: var(--neon-blue);">--:--:--</span>
-    </div>
+    <div id="status">CONNECTING...</div>
 </div>
 
 <script>
-    particlesJS("particles-js", {
-        "particles": {
-            "number": { "value": 50 },
-            "color": { "value": "#00f2ff" },
-            "opacity": { "value": 0.2 },
-            "line_linked": { "enable": true, "opacity": 0.1 }
-        }
-    });
-
     const DATA_URL = "https://raw.githubusercontent.com/orizonteams-cpu/gobi-vision/main/data.json";
-    
-    // เก็บค่าปัจจุบันไว้เพื่อเริ่มวิ่งจากจุดเดิม
-    let currentValues = {
-        total_scanned: 0,
-        total_deleted: 0,
-        penis_count: 0,
-        pussy_count: 0
-    };
+    let currentData = { total_scanned: 0, total_deleted: 0, penis_count: 0, pussy_count: 0 };
 
-    // ฟังก์ชันทำให้ตัวเลขวิ่ง
-    function animateNumber(id, start, end, duration) {
-        if (start === end) return;
+    // ฟังก์ชันทำให้ตัวเลขวิ่ง (Smooth Animation)
+    function animate(id, start, end) {
         const obj = document.getElementById(id);
-        const range = end - start;
-        let startTime = null;
-
-        function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-            const progress = Math.min((timestamp - startTime) / duration, 1);
-            const value = Math.floor(progress * range + start);
+        const duration = 1500;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const value = Math.floor(progress * (end - start) + start);
             obj.innerText = value.toLocaleString();
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            }
-        }
+            if (progress < 1) window.requestAnimationFrame(step);
+        };
         window.requestAnimationFrame(step);
     }
 
-    async function fetchData() {
+    async function syncData() {
         try {
-            // ใช้ Timestamp เพื่อหลบ Cache ของ GitHub
-            const response = await fetch(`${DATA_URL}?t=${new Date().getTime()}`);
-            const data = await response.json();
+            // เพิ่ม Cache Buster เพื่อป้องกัน GitHub จำค่าเก่า
+            const res = await fetch(`${DATA_URL}?nocache=${new Date().getTime()}`);
+            
+            if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+            
+            const data = await res.json();
+            console.log("Sync Successful:", data);
 
-            // สั่งให้ตัวเลขวิ่งจากค่าเก่าไปค่าใหม่
-            animateNumber("total_scanned", currentValues.total_scanned, data.total_scanned, 1500);
-            animateNumber("total_deleted", currentValues.total_deleted, data.total_deleted, 1000);
-            animateNumber("penis_count", currentValues.penis_count, data.penis_count, 1000);
-            animateNumber("pussy_count", currentValues.pussy_count, data.pussy_count, 1000);
+            // อัปเดตตัวเลขพร้อมเอฟเฟกต์วิ่ง
+            animate("total_scanned", currentData.total_scanned, data.total_scanned);
+            animate("total_deleted", currentData.total_deleted, data.total_deleted);
+            animate("penis_count", currentData.penis_count, data.penis_count);
+            animate("pussy_count", currentData.pussy_count, data.pussy_count);
 
-            // อัปเดตค่าปัจจุบันเก็บไว้ใช้รอบหน้า
-            currentValues = {
-                total_scanned: data.total_scanned,
-                total_deleted: data.total_deleted,
-                penis_count: data.penis_count,
-                pussy_count: data.pussy_count
-            };
+            currentData = data; // เก็บค่าไว้เทียบรอบหน้า
+            document.getElementById('status').innerText = `LAST SYNC: ${data.last_update} (SYSTEM ONLINE)`;
+            document.getElementById('status').style.color = "#00ff88";
 
-            document.getElementById('last_update').innerText = data.last_update;
-            document.getElementById('connection-indicator').innerText = "● CORE SYSTEM ONLINE";
-            document.getElementById('connection-indicator').style.color = "#00ff88";
-
-        } catch (e) {
-            document.getElementById('connection-indicator').innerText = "● SYNC ERROR";
-            document.getElementById('connection-indicator').style.color = "#ff0055";
+        } catch (err) {
+            console.error("Sync Failed:", err);
+            document.getElementById('status').innerText = "CONNECTION LOST - RETRYING...";
+            document.getElementById('status').style.color = "#ff0055";
         }
     }
 
-    // เช็คข้อมูลทุก 5 วินาที
-    setInterval(fetchData, 5000);
-    fetchData();
+    // เริ่มทำงาน
+    particlesJS("particles-js", { "particles": { "number": { "value": 40 }, "color": { "value": "#00f2ff" }, "opacity": { "value": 0.2 }, "line_linked": { "enable": true, "opacity": 0.1 } } });
+    
+    setInterval(syncData, 5000); // อัปเดตทุก 5 วินาที
+    syncData();
 </script>
 </body>
 </html>
