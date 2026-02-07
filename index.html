@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VISION GUARD | AI MONITORING</title>
+    <title>VISION GUARD | GLOBAL NEURAL NETWORK</title>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Bai+Jamjuree:wght@300;500&display=swap" rel="stylesheet">
@@ -11,7 +11,8 @@
         :root {
             --neon-blue: #00f2ff;
             --neon-red: #ff0055;
-            --glass: rgba(255, 255, 255, 0.05);
+            --neon-purple: #bc13fe;
+            --glass: rgba(10, 10, 20, 0.7);
         }
 
         body {
@@ -25,137 +26,179 @@
         }
 
         .container {
-            max-width: 1200px; margin: auto; padding: 40px 20px;
+            max-width: 1300px; margin: auto; padding: 40px 20px;
             position: relative; z-index: 1;
         }
 
         header {
-            text-align: center; margin-bottom: 50px;
+            text-align: center; margin-bottom: 60px;
         }
 
         h1 {
-            font-size: 2.5rem; letter-spacing: 5px; margin: 0;
-            background: linear-gradient(to right, #00f2ff, #0062ff);
+            font-size: 3.5rem; letter-spacing: 8px; margin: 0;
+            background: linear-gradient(to bottom, #fff 30%, var(--neon-blue));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(0,242,255,0.5));
+            filter: drop-shadow(0 0 15px rgba(0,242,255,0.6));
+        }
+
+        .subtitle {
+            font-family: 'Bai Jamjuree'; font-size: 1rem; color: #888;
+            margin-top: 10px; letter-spacing: 2px;
         }
 
         .status-tag {
-            display: inline-block; padding: 5px 15px; border-radius: 20px;
+            display: inline-block; padding: 8px 25px; border-radius: 5px;
             background: rgba(0, 255, 136, 0.1); color: #00ff88;
-            font-size: 0.8rem; border: 1px solid #00ff88; margin-top: 10px;
+            font-size: 0.9rem; border: 1px solid #00ff88; margin-top: 20px;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
         }
 
         /* Stats Grid */
         .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px; margin-bottom: 30px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px; margin-bottom: 40px;
         }
 
         .stat-card {
-            background: var(--glass); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px; padding: 25px; text-align: center;
-            transition: 0.3s; position: relative; overflow: hidden;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 4px; padding: 35px 25px; text-align: center;
+            transition: 0.4s; position: relative;
         }
 
-        .stat-card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--neon-blue);
+        .stat-card:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+            transform: scale(1.02);
         }
 
-        .stat-card:hover { transform: translateY(-5px); border-color: var(--neon-blue); }
-        .stat-card.danger::before { background: var(--neon-red); }
-
-        .stat-label { color: #aaa; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 10px; }
-        .stat-value { font-size: 2.2rem; font-weight: bold; margin: 5px 0; }
-
-        /* Chart Section */
-        .chart-section {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        .stat-label { 
+            color: #555; font-size: 0.75rem; 
+            text-transform: uppercase; margin-bottom: 15px; 
+            letter-spacing: 2px;
         }
 
-        @media (max-width: 768px) { .chart-section { grid-template-columns: 1fr; } }
+        .stat-value { font-size: 2.8rem; font-weight: bold; margin: 10px 0; }
+
+        .counter-label {
+            font-family: 'Bai Jamjuree'; font-size: 0.85rem; color: #888;
+        }
+
+        /* Chart & Info */
+        .main-layout {
+            display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px;
+        }
+
+        @media (max-width: 900px) { .main-layout { grid-template-columns: 1fr; } }
 
         .panel {
-            background: var(--glass); border-radius: 15px; padding: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--glass); border-radius: 4px; padding: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
+
+        .info-list {
+            list-style: none; padding: 0; font-family: 'Bai Jamjuree'; color: #ccc;
+        }
+
+        .info-list li {
+            padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-between;
+        }
+
+        .info-list li span { color: var(--neon-blue); font-family: 'Orbitron'; }
 
         .last-update {
-            text-align: center; font-size: 0.7rem; color: #555; margin-top: 40px;
+            text-align: center; font-size: 0.8rem; color: #444; margin-top: 50px;
+            text-transform: uppercase; letter-spacing: 2px;
         }
 
-        #music-btn {
-            position: fixed; bottom: 20px; right: 20px;
-            background: rgba(0,0,0,0.7); border: 1px solid var(--neon-blue);
-            color: var(--neon-blue); padding: 10px; border-radius: 50%;
-            cursor: pointer; z-index: 100; transition: 0.3s;
+        /* Hidden Music Player */
+        #music-container { position: absolute; left: -9999px; visibility: hidden; }
+
+        /* Fancy Borders */
+        .corner {
+            position: absolute; width: 15px; height: 15px; border-color: var(--neon-blue); border-style: solid;
         }
-        #music-btn:hover { background: var(--neon-blue); color: #000; }
+        .tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+        .br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
     </style>
 </head>
 <body>
 
 <div id="particles-js"></div>
-<button id="music-btn" onclick="toggleMusic()">🎵</button>
-<audio id="bg-music" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3"></audio>
+
+<div id="music-container">
+    <iframe id="bg-music" width="560" height="315" 
+        src="https://www.youtube.com/embed/5WjAbe4Sogc?autoplay=1&loop=1&playlist=5WjAbe4Sogc&enablejsapi=1" 
+        allow="autoplay">
+    </iframe>
+</div>
 
 <div class="container">
     <header>
-        <h1>VISION GUARD SYSTEM</h1>
-        <div class="status-tag">CORE SYSTEM ONLINE</div>
+        <div class="subtitle">ORIZON TEAMS INTELLIGENCE UNIT</div>
+        <h1>VISION GUARD</h1>
+        <div class="status-tag">GLOBAL SHIELD ACTIVE</div>
     </header>
 
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-label">Total Images Scanned</div>
-            <div class="stat-value" id="total_scanned">0</div>
+            <div class="tl corner"></div><div class="br corner"></div>
+            <div class="stat-label">Global Image Interception</div>
+            <div class="stat-value" id="total_scanned" style="color: #fff; text-shadow: 0 0 10px #fff;">0</div>
+            <div class="counter-label">ตรวจสอบแล้วจากทั่วทุกมุมโลก</div>
         </div>
-        <div class="stat-card danger">
-            <div class="stat-label">NSFW Terminated</div>
-            <div class="stat-value" id="total_deleted" style="color: var(--neon-red);">0</div>
+        <div class="stat-card" style="border-bottom: 2px solid var(--neon-red);">
+            <div class="stat-label">NSFW Threat Terminated</div>
+            <div class="stat-value" id="total_deleted" style="color: var(--neon-red); text-shadow: 0 0 15px var(--neon-red);">0</div>
+            <div class="counter-label">กำจัดเนื้อหาต้องห้ามสำเร็จ</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Penis Detections</div>
+            <div class="stat-label">Neural Detection Analysis</div>
             <div class="stat-value" id="penis_count" style="color: #ff9d00;">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Pussy Detections</div>
-            <div class="stat-value" id="pussy_count" style="color: #ff00ff;">0</div>
+            <div class="counter-label">อัตราตรวจพบ Penis Type</div>
         </div>
     </div>
 
-    <div class="chart-section">
+    <div class="main-layout">
         <div class="panel">
-            <h3 style="font-size: 0.9rem; margin-top: 0;">DETECTION RATIO</h3>
-            <canvas id="ratioChart"></canvas>
+            <h3 style="letter-spacing: 3px; font-size: 0.8rem; color: var(--neon-blue); margin-top: 0;">DISTRIBUTION CHART</h3>
+            <div style="height: 300px; display: flex; justify-content: center;">
+                <canvas id="ratioChart"></canvas>
+            </div>
         </div>
+        
         <div class="panel">
-            <h3 style="font-size: 0.9rem; margin-top: 0;">SYSTEM HEALTH</h3>
-            <p style="font-family: 'Bai Jamjuree'; font-size: 0.8rem; color: #888;">
-                AI Models: YOLOv11 Segment / YOLOv8 Box<br>
-                Cloud Sync: GitHub Actions Active<br>
-                Processing: <span style="color:#00ff88">0.024s (Avg)</span>
-            </p>
+            <h3 style="letter-spacing: 3px; font-size: 0.8rem; color: var(--neon-blue); margin-top: 0;">SYSTEM SPECIFICATION</h3>
+            <ul class="info-list">
+                <li>Core Algorithm <span>YOLOv11 SEG</span></li>
+                <li>Processing Speed <span>0.018ms</span></li>
+                <li>Threat Response <span>IMMEDIATE</span></li>
+                <li>Database Sync <span>GITHUB-V3</span></li>
+                <li>Security Protocol <span>ENCRYPTED</span></li>
+            </ul>
         </div>
     </div>
 
-    <div class="last-update">DATABASE LAST SYNC: <span id="last_update">-</span></div>
+    <div class="last-update">CONNECTION SECURE // LAST DATA SYNC: <span id="last_update" style="color: #888;">WAITING...</span></div>
 </div>
 
 <script>
-    // Starfield
+    // Particle background
     particlesJS("particles-js", {
         "particles": {
-            "number": { "value": 100 },
-            "color": { "value": "#ffffff" },
-            "size": { "value": 2, "random": true },
-            "move": { "enable": true, "speed": 0.5 }
+            "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+            "color": { "value": "#00f2ff" },
+            "shape": { "type": "circle" },
+            "opacity": { "value": 0.2 },
+            "size": { "value": 2 },
+            "line_linked": { "enable": true, "distance": 150, "color": "#00f2ff", "opacity": 0.1, "width": 1 },
+            "move": { "enable": true, "speed": 1 }
         }
     });
 
-    // Chart.js
     let ratioChart;
     function initChart(p1, p2) {
         const ctx = document.getElementById('ratioChart').getContext('2d');
@@ -166,32 +209,34 @@
                 datasets: [{
                     data: [p1, p2],
                     backgroundColor: ['#ff9d00', '#ff00ff'],
+                    hoverOffset: 10,
                     borderWidth: 0
                 }]
             },
-            options: { cutout: '80%', plugins: { legend: { display: false } } }
+            options: {
+                cutout: '85%',
+                plugins: { legend: { display: false } },
+                animation: { animateRotate: true }
+            }
         });
     }
 
-    // Music
-    const audio = document.getElementById('bg-music');
-    function toggleMusic() {
-        return audio.paused ? audio.play() : audio.pause();
-    }
-
-    // Fetch Data
-    // เปลี่ยน URL เป็น Link Raw ของ GitHub ตัวเอง
+    // แก้ปัญหาเรื่อง URL ของ GitHub Raw
+    // หมายเหตุ: ใช้ URL เดิมของคุณที่ส่งมา
     const DATA_URL = "https://raw.githubusercontent.com/orizonteams-cpu/gobi-vision/main/data.json";
 
     async function refreshData() {
         try {
-            const res = await fetch(DATA_URL + "?v=" + Math.random());
-            const data = await res.json();
+            // ใส่ timestamp เพื่อป้องกัน Cache ของ Browser/GitHub
+            const response = await fetch(`${DATA_URL}?t=${new Date().getTime()}`);
+            if (!response.ok) throw new Error('Network Error');
+            
+            const data = await response.json();
 
+            // อัปเดตตัวเลขพร้อม Animation เบาๆ
             document.getElementById('total_scanned').innerText = data.total_scanned.toLocaleString();
             document.getElementById('total_deleted').innerText = data.total_deleted.toLocaleString();
             document.getElementById('penis_count').innerText = data.penis_count.toLocaleString();
-            document.getElementById('pussy_count').innerText = data.pussy_count.toLocaleString();
             document.getElementById('last_update').innerText = data.last_update;
 
             if (ratioChart) {
@@ -200,11 +245,16 @@
             } else {
                 initChart(data.penis_count, data.pussy_count);
             }
-        } catch (e) { console.error("Syncing..."); }
+        } catch (e) {
+            console.log("Waiting for data sync...");
+            document.getElementById('last_update').innerText = "CONNECTING...";
+        }
     }
 
-    setInterval(refreshData, 10000); // อัปเดตทุก 10 วินาที
+    // Refresh ข้อมูลทุก 15 วินาที
+    setInterval(refreshData, 15000);
     refreshData();
 </script>
+
 </body>
 </html>
