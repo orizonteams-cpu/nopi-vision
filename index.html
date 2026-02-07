@@ -45,24 +45,12 @@
             box-shadow: inset 0 0 50px rgba(0, 242, 255, 0.05);
         }
 
-        .global-monitor::after {
-            content: "GLOBAL INTERCEPTION"; position: absolute;
-            top: 20px; left: 50%; transform: translateX(-50%);
-            font-size: 0.8rem; color: var(--neon-blue); letter-spacing: 10px; opacity: 0.7;
-        }
-
         .huge-value {
             font-size: 9rem; font-weight: 700;
             background: linear-gradient(to bottom, #fff, #888);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-shadow: 0 0 50px rgba(0, 242, 255, 0.4);
             line-height: 0.8; margin: 20px 0;
-            animation: pulse 4s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% { filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.2)); }
-            100% { filter: drop-shadow(0 0 60px rgba(0, 242, 255, 0.6)); }
         }
 
         .scan-text { font-family: 'Bai Jamjuree'; font-size: 1.5rem; color: #888; }
@@ -77,34 +65,25 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
             padding: 40px 20px; text-align: center; border-radius: 10px;
-            transition: 0.4s;
         }
 
-        .card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.05); }
         .card .val { font-size: 3rem; font-weight: bold; margin-bottom: 5px; }
         .card .lbl { font-size: 0.7rem; letter-spacing: 3px; color: #555; text-transform: uppercase; }
 
         .sync-status {
             text-align: center; margin-top: 60px; font-size: 0.7rem;
-            color: #333; letter-spacing: 4px;
+            color: #444; letter-spacing: 4px;
         }
-
-        /* Music Hidden Player */
-        #music-box { position: fixed; bottom: -100px; left: -100px; opacity: 0; }
     </style>
 </head>
 <body>
 
 <div id="particles-js"></div>
 
-<div id="music-box">
-    <iframe id="youtube-player" src="https://www.youtube.com/embed/5WjAbe4Sogc?enablejsapi=1&autoplay=1&loop=1&playlist=5WjAbe4Sogc" allow="autoplay"></iframe>
-</div>
-
 <div class="container">
     <header>
         <h1>VISION GUARD</h1>
-        <div id="connection-indicator" style="color: var(--neon-red); font-size: 0.7rem; margin-top: 10px; letter-spacing: 2px;">● CONNECTING TO CORE</div>
+        <div id="connection-indicator" style="color: var(--neon-red); font-size: 0.7rem; margin-top: 10px; letter-spacing: 2px;">● INITIALIZING...</div>
     </header>
 
     <div class="global-monitor">
@@ -128,7 +107,7 @@
     </div>
 
     <div class="sync-status">
-        LAST SYNC: <span id="last_update" style="color: #666;">--:--:--</span>
+        LAST DATA SYNC: <span id="last_update" style="color: var(--neon-blue);">--:--:--</span>
     </div>
 </div>
 
@@ -138,50 +117,72 @@
             "number": { "value": 50 },
             "color": { "value": "#00f2ff" },
             "opacity": { "value": 0.2 },
-            "size": { "value": 1 },
-            "line_linked": { "enable": true, "distance": 200, "color": "#00f2ff", "opacity": 0.1 }
+            "line_linked": { "enable": true, "opacity": 0.1 }
         }
     });
 
     const DATA_URL = "https://raw.githubusercontent.com/orizonteams-cpu/gobi-vision/main/data.json";
+    
+    // เก็บค่าปัจจุบันไว้เพื่อเริ่มวิ่งจากจุดเดิม
+    let currentValues = {
+        total_scanned: 0,
+        total_deleted: 0,
+        penis_count: 0,
+        pussy_count: 0
+    };
+
+    // ฟังก์ชันทำให้ตัวเลขวิ่ง
+    function animateNumber(id, start, end, duration) {
+        if (start === end) return;
+        const obj = document.getElementById(id);
+        const range = end - start;
+        let startTime = null;
+
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const value = Math.floor(progress * range + start);
+            obj.innerText = value.toLocaleString();
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        }
+        window.requestAnimationFrame(step);
+    }
 
     async function fetchData() {
         try {
-            // ป้องกันการจำค่าเก่าด้วย ?nocache=...
-            const res = await fetch(DATA_URL + "?nocache=" + Date.now());
-            if (!res.ok) throw new Error();
-            
-            const data = await res.json();
+            // ใช้ Timestamp เพื่อหลบ Cache ของ GitHub
+            const response = await fetch(`${DATA_URL}?t=${new Date().getTime()}`);
+            const data = await response.json();
 
-            // อัปเดตตัวเลข
-            document.getElementById('total_scanned').innerText = data.total_scanned.toLocaleString();
-            document.getElementById('total_deleted').innerText = data.total_deleted.toLocaleString();
-            document.getElementById('penis_count').innerText = data.penis_count.toLocaleString();
-            document.getElementById('pussy_count').innerText = data.pussy_count.toLocaleString();
+            // สั่งให้ตัวเลขวิ่งจากค่าเก่าไปค่าใหม่
+            animateNumber("total_scanned", currentValues.total_scanned, data.total_scanned, 1500);
+            animateNumber("total_deleted", currentValues.total_deleted, data.total_deleted, 1000);
+            animateNumber("penis_count", currentValues.penis_count, data.penis_count, 1000);
+            animateNumber("pussy_count", currentValues.pussy_count, data.pussy_count, 1000);
+
+            // อัปเดตค่าปัจจุบันเก็บไว้ใช้รอบหน้า
+            currentValues = {
+                total_scanned: data.total_scanned,
+                total_deleted: data.total_deleted,
+                penis_count: data.penis_count,
+                pussy_count: data.pussy_count
+            };
+
             document.getElementById('last_update').innerText = data.last_update;
-
-            // อัปเดตสถานะเป็น Online
-            const indicator = document.getElementById('connection-indicator');
-            indicator.innerText = "● CORE SYSTEM ONLINE";
-            indicator.style.color = "#00ff88";
+            document.getElementById('connection-indicator').innerText = "● CORE SYSTEM ONLINE";
+            document.getElementById('connection-indicator').style.color = "#00ff88";
 
         } catch (e) {
-            console.error("Sync Failed");
-            document.getElementById('connection-indicator').innerText = "● CONNECTION LOST";
+            document.getElementById('connection-indicator').innerText = "● SYNC ERROR";
             document.getElementById('connection-indicator').style.color = "#ff0055";
         }
     }
 
-    // เริ่มทำงาน
-    setInterval(fetchData, 10000); // เช็คทุก 5 วินาที
+    // เช็คข้อมูลทุก 5 วินาที
+    setInterval(fetchData, 5000);
     fetchData();
-
-    // ปลดล็อกเสียงเมื่อมีการคลิกครั้งแรก
-    window.onclick = () => {
-        const player = document.getElementById('youtube-player');
-        player.src += "&play=1";
-        console.log("Audio Unlocked");
-    };
 </script>
 </body>
 </html>
