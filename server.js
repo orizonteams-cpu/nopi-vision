@@ -1,6 +1,5 @@
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
-const si = require('systeminformation');
 const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
@@ -8,39 +7,52 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
 
+// เชื่อมต่อ Supabase
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-// --- API รับสถิติจากบอท (Security Check) ---
+// --- API: รับข้อมูลจากบอท (สถิติ + Hardware) ---
 app.post('/api/update-stats', async (req, res) => {
     const secret = req.headers['authorization'];
-    if (!secret || secret !== process.env.API_SECRET_TOKEN) return res.status(403).json({ error: "Forbidden" });
+    
+    // ตรวจสอบ Secret Key
+    if (!secret || secret !== process.env.API_SECRET_TOKEN) {
+        return res.status(403).json({ error: "Unauthorized: Invalid Secret Key" });
+    }
 
-    const { total_scanned, total_deleted, penis_count, pussy_count, servers, users } = req.body;
-    const { error } = await supabase.from('nopi_stats').update({ 
-        total_scanned, total_deleted, penis_count, pussy_count, server_count: servers, user_count: users, last_update: new Date() 
-    }).eq('id', 1);
+    const d = req.body;
+
+    // อัปเดตข้อมูลลง Supabase (ID: 1 เสมอ)
+    const { error } = await supabase
+        .from('nopi_stats')
+        .update({ 
+            total_scanned: d.total_scanned, 
+            total_deleted: d.total_deleted, 
+            penis_count: d.penis_count, 
+            pussy_count: d.pussy_count,
+            server_count: d.servers,
+            user_count: d.users,
+            // ข้อมูลเครื่องบอท
+            bot_os: d.sys_os,
+            bot_cpu_model: d.sys_cpu,
+            bot_cpu_temp: d.sys_temp,
+            bot_mem_used: d.sys_mem_used,
+            bot_mem_total: d.sys_mem_total,
+            bot_mem_percent: d.sys_mem_percent,
+            bot_uptime: d.sys_uptime,
+            last_update: new Date() 
+        })
+        .eq('id', 1);
 
     if (error) return res.status(500).json(error);
-    res.send("Updated");
+    res.status(200).send("✅ Data Synced Successfully");
 });
 
-// --- API ดึงข้อมูลระบบจริง ---
-app.get('/api/sys-info', async (req, res) => {
-    const [cpu, mem, os, temp, time] = await Promise.all([si.cpu(), si.mem(), si.osInfo(), si.cpuTemperature(), si.time()]);
-    res.json({
-        os: `${os.distro} ${os.release}`,
-        uptime: (time.uptime / 3600).toFixed(1),
-        cpuModel: cpu.brand,
-        cpuTemp: temp.main || "N/A",
-        memUsed: (mem.active / 1024**3).toFixed(2),
-        memTotal: (mem.total / 1024**3).toFixed(2),
-        memPercent: ((mem.active / mem.total) * 100).toFixed(1)
-    });
-});
-
+// --- API: ดึงข้อมูลไปแสดงผลบน Dashboard/Home ---
 app.get('/api/get-stats', async (req, res) => {
-    const { data } = await supabase.from('nopi_stats').select('*').single();
+    const { data, error } = await supabase.from('nopi_stats').select('*').single();
+    if (error) return res.status(500).json(error);
     res.json(data);
 });
 
@@ -52,4 +64,5 @@ app.get('/donate', (req, res) => res.sendFile(path.join(__dirname, 'views/donate
 app.get('/privacy', (req, res) => res.sendFile(path.join(__dirname, 'views/privacy.html')));
 app.get('/terms', (req, res) => res.sendFile(path.join(__dirname, 'views/terms.html')));
 
-app.listen(process.env.PORT || 3000);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Nopi Vision Online on port ${PORT}`));
