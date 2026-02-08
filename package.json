@@ -1,5 +1,5 @@
 {
-  "name": "nopi-vision-system",
+  "name": "nopi-vision-core",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
