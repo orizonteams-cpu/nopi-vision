@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Nopi Vision | น้องบอทผู้พิทักษ์</title>
+    
+    <link rel="icon" type="image/png" href="/logo.png">
+    
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root { --main-pink: #ffb7c5; --soft-blue: #bae1ff; }
@@ -12,24 +15,45 @@
         .nav { margin-top: 30px; }
         .nav a { color: #ff8fa3; text-decoration: none; border: 2px solid #ffc2cd; padding: 12px 30px; margin: 0 10px; border-radius: 50px; font-weight: bold; transition: 0.3s; background: white; display: inline-block; }
         .nav a:hover { background: #ffc2cd; color: white; transform: scale(1.05); }
-        .stats { margin-top: 50px; display: flex; gap: 40px; font-size: 1.1rem; background: rgba(255,255,255,0.7); padding: 15px 40px; border-radius: 30px; border: 1px solid #ffe4e8; }
-        .stat-n { color: #ff8fa3; font-weight: 700; font-size: 1.3rem; }
+        
+        /* ส่วนที่ 2: กล่องสถิติหน้าแรก */
+        .stats { margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 15px; background: rgba(255,255,255,0.7); padding: 20px 40px; border-radius: 30px; border: 1px solid #ffe4e8; }
+        .scanned-box { font-size: 1.5rem; font-weight: bold; color: #ff8fa3; }
+        .scanned-label { font-size: 0.7rem; letter-spacing: 2px; color: #ffb7c5; text-transform: uppercase; }
+        .stat-group { display: flex; gap: 40px; font-size: 1.1rem; border-top: 1px solid #ffe4e8; pt-10 mt-2 pt-2; }
+        .stat-n { color: #ff8fa3; font-weight: 700; font-size: 1.3rem; font-family: monospace; }
+        
+        /* ส่วนที่ 3: Banner มุมขวาบน */
+        .top-banner { position: absolute; top: 20px; right: 20px; z-index: 10; }
+        .top-banner img { height: 60px; border-radius: 10px; border: 1px solid #ffe4e8; transition: 0.3s; }
+        .top-banner img:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255,183,197,0.3); }
     </style>
 </head>
 <body>
+    <div class="top-banner">
+        <a href="/donate"><img src="/banner.png" alt="Banner"></a>
+    </div>
+
     <div class="circle-bg" style="width: 400px; height: 400px; top: -100px; left: -100px;"></div>
     <div class="circle-bg" style="width: 300px; height: 300px; bottom: -50px; right: -50px;"></div>
     
     <p style="letter-spacing: 3px; color: #ffb7c5; font-weight: bold;">SOFT SECURITY CORE</p>
     <h1>NOPI VISION</h1>
+
+    <div class="stats">
+        <div class="scanned-label">Total Scanned</div>
+        <div id="h_scanned" class="scanned-box" style="font-family: monospace; font-size: 2.5rem;">0,000,000</div>
+        
+        <div class="stat-group">
+            <div>☁️ <span class="stat-n" id="h_servers">0</span> SERVERS</div>
+            <div>🌸 <span class="stat-n" id="h_deleted">0</span> DELETED</div>
+        </div>
+    </div>
+
     <div class="nav">
         <a href="/invite">INVITE</a>
         <a href="/dashboard">DASHBOARD</a>
         <a href="/donate">DONATE</a>
-    </div>
-    <div class="stats">
-        <div>☁️ <span class="stat-n" id="h_servers">0</span> SERVERS</div>
-        <div>🌸 <span class="stat-n" id="h_deleted">0</span> DELETED</div>
     </div>
     
     <div style="margin-top: 40px; font-size: 0.8rem; opacity: 0.6;">
@@ -37,10 +61,37 @@
     </div>
 
     <script>
+        // ฟังก์ชันทำให้เลขวิ่ง
+        function countUp(id, endValue) {
+            const el = document.getElementById(id);
+            let start = 0;
+            const duration = 2000; 
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(progress * endValue);
+                
+                // ล็อค 7 หลักเสมอ
+                el.innerText = current.toLocaleString('en-US', {
+                    minimumIntegerDigits: 7,
+                    useGrouping: true
+                });
+
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
         async function load() {
             try {
                 const res = await fetch('/api/get-stats');
                 const s = await res.json();
+                
+                // เรียกเลขวิ่ง 7 หลัก
+                countUp('h_scanned', s.total_scanned);
+                
                 document.getElementById('h_servers').innerText = s.server_count.toLocaleString();
                 document.getElementById('h_deleted').innerText = s.total_deleted.toLocaleString();
             } catch(e) { console.log("Load error"); }
