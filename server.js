@@ -1,71 +1,60 @@
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
-const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
 
-// เชื่อ mต่อ Supabase
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-// --- API: รับข้อมูลจากบอท (สถิติ + Hardware) ---
 app.post('/api/update-stats', async (req, res) => {
-    const secret = req.headers['authorization'];
-    
-    // ตรวจสอบ Secret Key
-    if (!secret || secret !== process.env.API_SECRET_TOKEN) {
-        return res.status(403).json({ error: "Unauthorized: Invalid Secret Key" });
+    try {
+        const secret = req.headers['authorization'];
+        
+        // 1. ตรวจสอบ Token
+        if (!secret || secret !== process.env.API_SECRET_TOKEN) {
+            console.warn(`[${new Date().toLocaleTimeString()}] ⚠️ Unauthorized Access Attempt`);
+            return res.status(403).json({ error: "Invalid Token" });
+        }
+
+        const d = req.body;
+
+        // 2. จัดรูปแบบข้อมูลก่อนลง Database (Mapping)
+        const updateData = { 
+            total_scanned: Number(d.total_scanned) || 0, 
+            total_deleted: Number(d.total_deleted) || 0, 
+            penis_count: Number(d.penis_count) || 0, 
+            pussy_count: Number(d.pussy_count) || 0,
+            server_count: Number(d.servers) || 0,
+            user_count: Number(d.users) || 0,
+            bot_os: String(d.sys_os || 'Unknown'),
+            bot_cpu_model: String(d.sys_cpu || '0%'), 
+            bot_mem_used: parseFloat(d.sys_mem_used) || 0,
+            bot_mem_total: parseFloat(d.sys_mem_total) || 0,
+            bot_mem_percent: parseFloat(d.sys_mem_percent) || 0,
+            bot_uptime: String(d.sys_uptime || '0'),
+            status: String(d.status || 'online'),
+            last_update: new Date() 
+        };
+
+        // 3. ยิง Update ไปที่ Supabase
+        const { error } = await supabase
+            .from('nopi_stats')
+            .update(updateData)
+            .eq('id', 1);
+
+        if (error) throw error;
+
+        console.log(`[${new Date().toLocaleTimeString()}] ✅ Sync Success | Stats: ${d.status}`);
+        res.status(200).json({ message: "Data Synced" });
+
+    } catch (err) {
+        console.error("❌ API Error:", err.message);
+        res.status(500).json({ error: "Internal Server Error", details: err.message });
     }
-
-    const d = req.body;
-
-    // เตรียมข้อมูลสำหรับ Update (ชื่อฟีลด์ต้องตรงกับใน Python และ Column ใน Supabase)
-    const updateData = { 
-        total_scanned: d.total_scanned, 
-        total_deleted: d.total_deleted, 
-        penis_count: d.penis_count, 
-        pussy_count: d.pussy_count,
-        server_count: d.servers,
-        user_count: d.users,
-        bot_os: d.sys_os,
-        bot_cpu_model: d.sys_cpu,      // เก็บเป็น Text เช่น "15.5%"
-        bot_mem_used: d.sys_mem_used,
-        bot_mem_total: d.sys_mem_total,
-        bot_mem_percent: d.sys_mem_percent,
-        bot_uptime: d.sys_uptime,     // เก็บเป็น Text เช่น "0 วัน 1 ชม..."
-        status: d.status || "online", // เพิ่มฟีลด์สถานะ
-        last_update: new Date() 
-    };
-
-    // อัปเดตข้อมูลลง Supabase (ID: 1)
-    const { error } = await supabase
-        .from('nopi_stats')
-        .update(updateData)
-        .eq('id', 1);
-
-    if (error) {
-        console.error("❌ Supabase Error:", error.message);
-        return res.status(500).json({ error: error.message });
-    }
-
-    console.log(`[${new Date().toLocaleTimeString()}] ✅ Stats Updated: ${d.status}`);
-    res.status(200).send("✅ Data Synced Successfully");
 });
-
-// --- API: ดึงข้อมูลไปแสดงผล ---
-app.get('/api/get-stats', async (req, res) => {
-    const { data, error } = await supabase.from('nopi_stats').select('*').single();
-    if (error) return res.status(500).json(error);
-    res.json(data);
-});
-
-// --- Page Routing ---
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'views/home.html')));
-app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'views/dashboard.html')));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server Running on port ${PORT}`));
