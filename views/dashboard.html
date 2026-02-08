@@ -13,17 +13,21 @@
         .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border-radius: 20px; }
         .stat-card { transition: transform 0.3s; }
         .stat-card:hover { transform: translateY(-5px); }
+        .pulse-online { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
 <body class="bg-pink-50">
 
     <div class="container mx-auto px-4 py-10">
         <h1 class="text-4xl font-bold text-center text-pink-500 mb-2 cute-font">🎀 Nopi Status Dashboard 🎀</h1>
-        <p class="text-center text-gray-500 mb-10">สถานะการทำงานแบบเรียลไทม์ของนอปปี้</p>
+        <p class="text-center text-gray-500 mb-10 flex items-center justify-center">
+            สถานะ: <span id="status-text" class="ml-2 font-bold uppercase">Loading...</span>
+        </p>
 
         <div class="glass p-8 mb-8 shadow-sm border border-pink-100 text-center">
             <h2 class="text-lg text-pink-400 mb-2"><i class="fa-solid fa-clock"></i> บอททำงานมาแล้ว</h2>
-            <div id="uptime-display" class="text-3xl font-bold text-gray-700">กำลังคำนวณ...</div>
+            <div id="uptime-display" class="text-3xl font-bold text-gray-700 font-mono">กำลังคำนวณ...</div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -53,60 +57,57 @@
             <div class="glass p-6 shadow-sm">
                 <h3 class="font-bold mb-4 text-pink-500"><i class="fa-solid fa-info-circle"></i> ข้อมูลเครื่อง</h3>
                 <ul class="space-y-3 text-sm">
-                    <li class="flex justify-between"><span>OS:</span> <span id="bot_os" class="font-medium">-</span></li>
-                    <li class="flex justify-between"><span>CPU Model:</span> <span id="bot_cpu" class="font-medium">-</span></li>
-                    <li class="flex justify-between"><span>Memory:</span> <span id="bot_mem" class="font-medium">-</span></li>
+                    <li class="flex justify-between border-b border-pink-50 pb-2"><span>OS:</span> <span id="bot_os" class="font-medium text-gray-600">-</span></li>
+                    <li class="flex justify-between border-b border-pink-50 pb-2"><span>RAM Percent:</span> <span id="bot_mem_pct" class="font-medium text-gray-600">-</span></li>
+                    <li class="flex justify-between"><span>Memory Used:</span> <span id="bot_mem" class="font-medium text-gray-600">-</span></li>
                 </ul>
             </div>
-            <div class="glass p-6 shadow-sm flex items-center justify-center">
-                <div class="text-center">
-                    <p class="text-gray-400 text-xs mb-1 uppercase">Last Update</p>
-                    <p id="last_update" class="text-sm font-mono font-bold text-gray-600">-</p>
-                </div>
+            <div class="glass p-6 shadow-sm flex flex-col items-center justify-center">
+                <p class="text-gray-400 text-xs mb-1 uppercase">Last Update</p>
+                <p id="last_update" class="text-sm font-mono font-bold text-gray-600">-</p>
+                <div id="update-indicator" class="mt-2 w-2 h-2 rounded-full bg-green-500 pulse-online"></div>
             </div>
         </div>
     </div>
 
     <script>
-        let startTime = 0;
-
-        function updateUptimeDisplay() {
-            if (startTime === 0) return;
-            const now = Date.now() / 1000;
-            let diff = now - (now - startTime); // หรือคำนวณจากค่าที่ดึงมา
-            
-            // ในที่นี้เราจะบวกเพิ่มทีละวินาทีจากค่าตั้งต้นที่ได้จาก API
-            startTime += 1;
-            
-            let d = Math.floor(startTime / (3600*24));
-            let h = Math.floor(startTime % (3600*24) / 3600);
-            let m = Math.floor(startTime % 3600 / 60);
-            let s = Math.floor(startTime % 60);
-
-            document.getElementById('uptime-display').innerText = 
-                `${d} วัน ${h} ชั่วโมง ${m} นาที ${s} วินาที`;
-        }
-
         async function fetchStats() {
-            const res = await fetch('/api/get-stats');
-            const data = await res.json();
+            try {
+                const res = await fetch('/api/get-stats');
+                const data = await res.json();
 
-            document.getElementById('total_scanned').innerText = data.total_scanned.toLocaleString();
-            document.getElementById('total_deleted').innerText = data.total_deleted.toLocaleString();
-            document.getElementById('server_count').innerText = data.server_count;
-            document.getElementById('cpu_usage').innerText = data.bot_mem_percent + '%'; // หรือใช้ข้อมูล cpu
-            document.getElementById('bot_os').innerText = data.bot_os;
-            document.getElementById('bot_cpu').innerText = data.bot_cpu_model;
-            document.getElementById('bot_mem').innerText = `${data.bot_mem_used} / ${data.bot_mem_total} GB`;
-            document.getElementById('last_update').innerText = new Date(data.last_update).toLocaleString('th-TH');
-            
-            // ตั้งค่าเวลาเริ่มต้น (วินาที)
-            startTime = data.bot_uptime * 3600; 
+                // อัปเดตตัวเลขสถิติ
+                document.getElementById('total_scanned').innerText = data.total_scanned.toLocaleString();
+                document.getElementById('total_deleted').innerText = data.total_deleted.toLocaleString();
+                document.getElementById('server_count').innerText = data.server_count.toLocaleString();
+                
+                // ข้อมูล Hardware
+                document.getElementById('cpu_usage').innerText = data.bot_cpu_model; // บอทส่ง % มาใน cpu_model
+                document.getElementById('bot_os').innerText = data.bot_os;
+                document.getElementById('bot_mem_pct').innerText = data.bot_mem_percent + '%';
+                document.getElementById('bot_mem').innerText = `${data.bot_mem_used} / ${data.bot_mem_total} GB`;
+                
+                // สถานะและ Uptime (ดึงจาก String ตรงๆ)
+                document.getElementById('uptime-display').innerText = data.bot_uptime;
+                document.getElementById('status-text').innerText = data.status;
+                document.getElementById('status-text').className = data.status === 'online' ? 'ml-2 font-bold text-green-500' : 'ml-2 font-bold text-red-500';
+                
+                // เวลาอัปเดตล่าสุด
+                const updateTime = new Date(data.last_update);
+                document.getElementById('last_update').innerText = updateTime.toLocaleString('th-TH');
+
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                document.getElementById('status-text').innerText = "OFFLINE (ERROR)";
+                document.getElementById('status-text').className = "ml-2 font-bold text-red-500";
+            }
         }
 
+        // เริ่มต้นทำงาน
         fetchStats();
-        setInterval(fetchStats, 30000); // ดึงข้อมูลใหม่ทุก 30 วิ
-        setInterval(updateUptimeDisplay, 1000); // อัปเดตตัวเลขวินาทีทุก 1 วิ
+        
+        // อัปเดตทุกๆ 10 วินาที (ไม่ควรบ่อยเกินไปเพื่อลดโหลด)
+        setInterval(fetchStats, 10000);
     </script>
 </body>
 </html>
