@@ -1,5 +1,6 @@
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
+const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -7,44 +8,44 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// เชื่อมต่อ Supabase ผ่านตัวแปรสภาพแวดล้อม (Environment Variables)
+// เชื่อมต่อ Supabase
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-// --- ส่วนที่ใช้เช็ค Secret Key ที่คุณถามหา ---
+// เสิร์ฟไฟล์หน้าเว็บ static
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/privacy-policy', (req, res) => res.sendFile(path.join(__dirname, 'privacy.html')));
+app.get('/terms', (req, res) => res.sendFile(path.join(__dirname, 'terms.html')));
+
+// API สำหรับรับข้อมูลจาก Bot
 app.post('/update-nopi-stats', async (req, res) => {
-    // ดึงรหัสผ่านมาจาก Header ที่ชื่อ Authorization
-    const clientToken = req.headers['authorization'];
-    
-    // เปรียบเทียบรหัสที่บอทส่งมา กับรหัสที่เราตั้งไว้ในหน้าเว็บ Render (API_SECRET_TOKEN)
-    if (!clientToken || clientToken !== process.env.API_SECRET_TOKEN) {
-        console.error("❌ Unauthorized access attempt!");
-        return res.status(403).json({ error: "Invalid Secret Key" });
+    const token = req.headers['authorization'];
+    if (token !== process.env.API_SECRET_TOKEN) {
+        return res.status(403).json({ error: "Unauthorized" });
     }
 
     const { total_scanned, total_deleted, penis_count, pussy_count } = req.body;
 
-    // อัปเดตลง Supabase ตาราง nopi_stats ที่ ID = 1
     const { error } = await supabase
         .from('nopi_stats')
         .update({ 
             total_scanned, 
             total_deleted, 
             penis_count, 
-            pussy_count, 
+            pussy_count,
             last_update: new Date() 
         })
         .eq('id', 1);
 
-    if (error) {
-        console.error("Supabase Error:", error);
-        return res.status(500).json(error);
-    }
-
-    res.status(200).send("✅ Data Synced Successfully");
+    if (error) return res.status(500).json(error);
+    res.status(200).send("OK");
 });
 
-// หน้าเช็คสถานะ API ง่ายๆ
-app.get('/', (req, res) => res.send("API is Online!"));
+// API สำหรับหน้าเว็บดึงสถิติ
+app.get('/api/stats', async (req, res) => {
+    const { data, error } = await supabase.from('nopi_stats').select('*').single();
+    if (error) return res.status(500).json(error);
+    res.json(data);
+});
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 API running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 System Running on Port ${PORT}`));
