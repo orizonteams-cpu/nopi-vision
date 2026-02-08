@@ -2,52 +2,76 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Nopi Vision | น้องบอทผู้พิทักษ์</title>
-    
     <link rel="icon" type="image/png" href="/logo.png">
     
+    <title>Nopi Vision | น้องบอทผู้พิทักษ์</title>
     <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root { --main-pink: #ffb7c5; --soft-blue: #bae1ff; }
-        body { background: #fffafb; color: #555; font-family: 'Mali', cursive; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        body { background: #fffafb; color: #555; font-family: 'Mali', cursive; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; position: relative; }
+        
+        /* 2. Banner อยู่มุมซ้ายมือ (ตามสั่ง) */
+        .top-left-banner { 
+            position: absolute; 
+            top: 20px; 
+            left: 20px; 
+            z-index: 50;
+        }
+        .top-left-banner img { 
+            height: 60px; 
+            border-radius: 12px; 
+            border: 2px solid #ffe4e8; 
+            transition: 0.3s ease;
+        }
+        .top-left-banner img:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255,183,197,0.3); }
+
         .circle-bg { position: absolute; background: var(--main-pink); opacity: 0.1; border-radius: 50%; z-index: -1; }
         h1 { font-family: 'Quicksand', sans-serif; font-size: 3.5rem; margin: 0; color: #ff8fa3; letter-spacing: -1px; }
-        .nav { margin-top: 30px; }
+        
+        /* กล่องสถิติเลข 7 หลัก */
+        .main-stats {
+            text-align: center;
+            margin: 25px 0;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 25px 50px;
+            border-radius: 40px;
+            border: 1px solid #ffe4e8;
+            backdrop-filter: blur(5px);
+        }
+        .scanned-label { font-size: 0.8rem; letter-spacing: 4px; color: #ffb7c5; font-weight: bold; margin-bottom: 5px; }
+        .scanned-number { 
+            font-family: monospace; 
+            font-size: 4rem; 
+            font-weight: 700; 
+            color: #ff8fa3; 
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 0px rgba(255,255,255,1);
+        }
+
+        .nav { margin-top: 20px; }
         .nav a { color: #ff8fa3; text-decoration: none; border: 2px solid #ffc2cd; padding: 12px 30px; margin: 0 10px; border-radius: 50px; font-weight: bold; transition: 0.3s; background: white; display: inline-block; }
         .nav a:hover { background: #ffc2cd; color: white; transform: scale(1.05); }
         
-        /* ส่วนที่ 2: กล่องสถิติหน้าแรก */
-        .stats { margin-top: 30px; display: flex; flex-direction: column; align-items: center; gap: 15px; background: rgba(255,255,255,0.7); padding: 20px 40px; border-radius: 30px; border: 1px solid #ffe4e8; }
-        .scanned-box { font-size: 1.5rem; font-weight: bold; color: #ff8fa3; }
-        .scanned-label { font-size: 0.7rem; letter-spacing: 2px; color: #ffb7c5; text-transform: uppercase; }
-        .stat-group { display: flex; gap: 40px; font-size: 1.1rem; border-top: 1px solid #ffe4e8; pt-10 mt-2 pt-2; }
-        .stat-n { color: #ff8fa3; font-weight: 700; font-size: 1.3rem; font-family: monospace; }
-        
-        /* ส่วนที่ 3: Banner มุมขวาบน */
-        .top-banner { position: absolute; top: 20px; right: 20px; z-index: 10; }
-        .top-banner img { height: 60px; border-radius: 10px; border: 1px solid #ffe4e8; transition: 0.3s; }
-        .top-banner img:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255,183,197,0.3); }
+        .sub-stats { margin-top: 35px; display: flex; gap: 40px; font-size: 1.1rem; opacity: 0.8; }
+        .stat-n { color: #ff8fa3; font-weight: 700; font-size: 1.3rem; }
     </style>
 </head>
 <body>
-    <div class="top-banner">
-        <a href="/donate"><img src="/banner.png" alt="Banner"></a>
+    <div class="top-left-banner">
+        <a href="/donate">
+            <img src="/banner.png" alt="Nopi Banner">
+        </a>
     </div>
 
     <div class="circle-bg" style="width: 400px; height: 400px; top: -100px; left: -100px;"></div>
     <div class="circle-bg" style="width: 300px; height: 300px; bottom: -50px; right: -50px;"></div>
     
-    <p style="letter-spacing: 3px; color: #ffb7c5; font-weight: bold;">SOFT SECURITY CORE</p>
+    <p style="letter-spacing: 5px; color: #ffb7c5; font-weight: bold;">SOFT SECURITY CORE</p>
     <h1>NOPI VISION</h1>
 
-    <div class="stats">
-        <div class="scanned-label">Total Scanned</div>
-        <div id="h_scanned" class="scanned-box" style="font-family: monospace; font-size: 2.5rem;">0,000,000</div>
-        
-        <div class="stat-group">
-            <div>☁️ <span class="stat-n" id="h_servers">0</span> SERVERS</div>
-            <div>🌸 <span class="stat-n" id="h_deleted">0</span> DELETED</div>
-        </div>
+    <div class="main-stats">
+        <div class="scanned-label">IMAGES PROTECTED</div>
+        <div id="h_scanned" class="scanned-number">0,000,000</div>
     </div>
 
     <div class="nav">
@@ -55,25 +79,32 @@
         <a href="/dashboard">DASHBOARD</a>
         <a href="/donate">DONATE</a>
     </div>
+
+    <div class="sub-stats">
+        <div>☁️ <span class="stat-n" id="h_servers">0</span> SERVERS</div>
+        <div>🌸 <span class="stat-n" id="h_deleted">0</span> DELETED</div>
+    </div>
     
     <div style="margin-top: 40px; font-size: 0.8rem; opacity: 0.6;">
         <a href="/privacy" style="color:#ff8fa3">Privacy</a> | <a href="/terms" style="color:#ff8fa3">Terms</a>
     </div>
 
     <script>
-        // ฟังก์ชันทำให้เลขวิ่ง
-        function countUp(id, endValue) {
+        // ฟังก์ชันตัวเลขวิ่ง ล็อค 7 หลัก
+        function animateScanned(id, endValue) {
             const el = document.getElementById(id);
             let start = 0;
-            const duration = 2000; 
+            const duration = 2500; // วิ่ง 2.5 วินาทีให้ดูพรีเมียม
             const startTime = performance.now();
 
             function update(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
-                const current = Math.floor(progress * endValue);
                 
-                // ล็อค 7 หลักเสมอ
+                // Ease out function เพื่อให้เลขช้าลงตอนใกล้ถึงเป้าหมาย
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(easeOut * endValue);
+                
                 el.innerText = current.toLocaleString('en-US', {
                     minimumIntegerDigits: 7,
                     useGrouping: true
@@ -84,19 +115,23 @@
             requestAnimationFrame(update);
         }
 
-        async function load() {
+        async function loadData() {
             try {
                 const res = await fetch('/api/get-stats');
                 const s = await res.json();
                 
-                // เรียกเลขวิ่ง 7 หลัก
-                countUp('h_scanned', s.total_scanned);
+                // เริ่ม Animation เลข 7 หลัก
+                animateScanned('h_scanned', s.total_scanned);
                 
                 document.getElementById('h_servers').innerText = s.server_count.toLocaleString();
                 document.getElementById('h_deleted').innerText = s.total_deleted.toLocaleString();
-            } catch(e) { console.log("Load error"); }
+            } catch(e) { 
+                console.log("Load error"); 
+                document.getElementById('h_scanned').innerText = "0,000,000";
+            }
         }
-        load();
+        
+        window.onload = loadData;
     </script>
 </body>
 </html>
