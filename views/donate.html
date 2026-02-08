@@ -2,20 +2,51 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Donate | Support Nopi</title>
-    <style>
-        body { background: #05060a; color: white; font-family: sans-serif; text-align: center; padding: 50px; }
-        .card { background: #111; border: 1px solid #222; padding: 40px; display: inline-block; border-radius: 15px; }
-        .qr { width: 250px; background: white; padding: 10px; margin: 20px 0; }
-    </style>
+    <title>Donate - Support Nopi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>body { font-family: 'Mali', cursive; }</style>
 </head>
-<body>
-    <div class="card">
-        <h1>สนับสนุนโครงการ</h1>
-        <p>เพื่อสมทบทุนค่าเช่าเครื่อง Server และ GPU สำหรับ AI</p>
-        <div class="qr"><img src="LINK_รูป_QR_PAYMENT_คุณ" width="100%"></div>
-        <p>ขอบคุณทุกการสนับสนุนเพื่อให้สังคมออนไลน์ปลอดภัยขึ้น</p>
-        <a href="/" style="color: #00f2ff;">หน้าหลัก</a>
+<body class="bg-pink-50 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-10 rounded-3xl shadow-xl max-w-lg w-full text-center border-4 border-pink-200">
+        <img src="https://cdn-icons-png.flaticon.com/512/803/803024.png" class="w-20 mx-auto mb-4" alt="Cute Icon">
+        <h1 class="text-3xl font-bold text-pink-500 mb-2">สนับสนุนนอปปี้</h1>
+        <p class="text-gray-500 mb-8">ช่วยเป็นค่าน้ำค่าไฟให้น้องบอทได้พัฒนาต่อไปนะค๊ะ</p>
+
+        <div class="grid grid-cols-1 gap-4">
+            <div class="flex items-center p-4 border-2 border-orange-100 rounded-2xl hover:bg-orange-50 transition cursor-pointer">
+                <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center text-white mr-4">
+                    <i class="fa-solid fa-wallet text-xl"></i>
+                </div>
+                <div class="text-left">
+                    <div class="font-bold">TrueMoney Wallet</div>
+                    <div class="text-sm text-gray-500">0xx-xxx-xxxx (ชื่อของคุณ)</div>
+                </div>
+            </div>
+
+            <div class="flex items-center p-4 border-2 border-blue-100 rounded-2xl hover:bg-blue-50 transition cursor-pointer">
+                <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white mr-4">
+                    <i class="fa-solid fa-qrcode text-xl"></i>
+                </div>
+                <div class="text-left">
+                    <div class="font-bold">PromptPay</div>
+                    <div class="text-sm text-gray-500">คลิกเพื่อดู QR Code</div>
+                </div>
+            </div>
+
+            <div class="flex items-center p-4 border-2 border-gray-100 rounded-2xl hover:bg-gray-50 transition cursor-pointer">
+                <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center text-white mr-4">
+                    <i class="fa-solid fa-coffee text-xl"></i>
+                </div>
+                <div class="text-left">
+                    <div class="font-bold">Buy me a Coffee</div>
+                    <div class="text-sm text-gray-500">ko-fi.com/yourlink</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="/" class="inline-block mt-8 text-pink-400 hover:text-pink-600 text-sm">กลับหน้าหลัก</a>
     </div>
 </body>
 </html>
