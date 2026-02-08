@@ -2,239 +2,61 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nopi Vision | Live Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bai+Jamjuree:wght@300;500;600&display=swap" rel="stylesheet">
+    <title>Nopi Vision | Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Bai+Jamjuree:wght@300;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --neon-cyan: #00f2ff;
-            --neon-red: #ff0055;
-            --bg-dark: #020205;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border: rgba(0, 242, 255, 0.15);
-        }
-
-        body {
-            margin: 0;
-            background: var(--bg-dark);
-            color: #fff;
-            font-family: 'Orbitron', sans-serif;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: auto;
-            padding: 40px 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
-        }
-
-        h1 {
-            letter-spacing: 12px;
-            font-weight: 900;
-            text-transform: uppercase;
-            margin: 0;
-            background: linear-gradient(to right, #fff, var(--neon-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .status-header {
-            font-family: 'Bai Jamjuree';
-            color: var(--neon-cyan);
-            font-size: 0.8rem;
-            letter-spacing: 4px;
-        }
-
-        /* Dashboard Grid */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 25px;
-            position: relative;
-            transition: 0.3s;
-            backdrop-filter: blur(5px);
-        }
-
-        .card:hover {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
-        }
-
-        .card::before {
-            content: "";
-            position: absolute;
-            top: -1px; left: -1px;
-            width: 15px; height: 15px;
-            border-top: 2px solid var(--neon-cyan);
-            border-left: 2px solid var(--neon-cyan);
-        }
-
-        .label {
-            font-size: 0.65rem;
-            letter-spacing: 2px;
-            color: #666;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
-
-        .value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            word-break: break-all;
-        }
-
-        .unit {
-            font-size: 0.9rem;
-            color: var(--neon-cyan);
-            margin-left: 5px;
-        }
-
-        /* Progress Bars */
-        .bar-container {
-            width: 100%;
-            height: 4px;
-            background: rgba(255,255,255,0.05);
-            margin-top: 15px;
-            overflow: hidden;
-        }
-
-        .bar-fill {
-            height: 100%;
-            background: var(--neon-cyan);
-            width: 0%;
-            transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        .sub-text {
-            font-family: 'Bai Jamjuree';
-            font-size: 0.8rem;
-            color: #555;
-            margin-top: 10px;
-            display: block;
-        }
-
-        nav {
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        nav a {
-            color: #666;
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: 0.3s;
-        }
-
-        nav a:hover, nav a.active {
-            color: var(--neon-cyan);
-        }
+        :root { --cyan: #00f2ff; --red: #ff0055; --dark: #05060a; }
+        body { background: var(--dark); color: white; font-family: 'Orbitron', sans-serif; margin: 0; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 40px auto; }
+        .card { border: 1px solid rgba(0,242,255,0.1); background: rgba(255,255,255,0.02); padding: 20px; border-radius: 5px; position: relative; }
+        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 10px; height: 10px; border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
+        .label { color: #555; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        .val { font-size: 1.8rem; font-weight: bold; }
+        .bar-bg { width: 100%; height: 5px; background: #111; margin-top: 15px; }
+        .bar-fill { height: 100%; background: var(--cyan); width: 0%; transition: 1s; box-shadow: 0 0 10px var(--cyan); }
+        nav { text-align: center; margin-bottom: 30px; }
+        nav a { color: var(--cyan); text-decoration: none; margin: 0 15px; font-size: 0.8rem; opacity: 0.6; }
+        nav a:hover { opacity: 1; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <nav>
-        <a href="/">HOME</a>
-        <a href="/dashboard" class="active">DASHBOARD</a>
-        <a href="/invite">INVITE</a>
-        <a href="/donate">DONATE</a>
-        <a href="/privacy">PRIVACY</a>
-    </nav>
-
-    <header>
-        <span class="status-header">SYSTEM LIVE STREAM</span>
-        <h1>Command Center</h1>
-    </header>
+    <nav><a href="/">HOME</a> | <a href="/dashboard">DASHBOARD</a> | <a href="/invite">INVITE</a></nav>
+    <h1 style="text-align:center; letter-spacing:10px;">SYSTEM MONITOR</h1>
 
     <div class="grid">
-        <div class="card">
-            <div class="label">Total Threat Eliminated</div>
-            <div class="value" id="total_deleted" style="color: var(--neon-red);">0</div>
-            <span class="sub-text">รูปภาพที่ถูกทำลายโดย AI</span>
-        </div>
-        <div class="card">
-            <div class="label">Servers Protected</div>
-            <div class="value" id="server_count">0</div>
-            <span class="sub-text">เซิร์ฟเวอร์ที่ติดตั้งระบบ Nopi</span>
-        </div>
-        <div class="card">
-            <div class="label">Active Intelligence</div>
-            <div class="value" id="user_count">0</div>
-            <span class="sub-text">จำนวนผู้ใช้งานที่ดูแลอยู่</span>
-        </div>
+        <div class="card"><div class="label">Total Deleted</div><div class="val" style="color:var(--red)" id="total_deleted">0</div></div>
+        <div class="card"><div class="label">Servers</div><div class="val" id="server_count">0</div></div>
+        <div class="card"><div class="label">Users</div><div class="val" id="user_count">0</div></div>
 
+        <div class="card"><div class="label">Bot CPU Model</div><div class="val" style="font-size:1rem" id="bot_cpu_model">Loading...</div></div>
         <div class="card">
-            <div class="label">Processor (CPU)</div>
-            <div class="value" id="cpuModel" style="font-size: 1.1rem;">Loading...</div>
-            <div class="sub-text">Temp: <span id="cpuTemp" style="color:#fff">0</span>°C | Fan: <span style="color:#00ff88">Active</span></div>
+            <div class="label">Bot RAM Usage</div>
+            <div class="val"><span id="bot_mem_used">0</span> / <span id="bot_mem_total">0</span> GB</div>
+            <div class="bar-bg"><div id="memBar" class="bar-fill"></div></div>
         </div>
-        
-        <div class="card">
-            <div class="label">Memory Allocation (RAM)</div>
-            <div class="value"><span id="memUsed">0</span><span class="unit">GB</span> / <span id="memTotal">0</span><span class="unit">GB</span></div>
-            <div class="bar-container">
-                <div id="memBar" class="bar-fill"></div>
-            </div>
-            <span class="sub-text">Real-time usage: <span id="memPercent">0</span>%</span>
-        </div>
-
-        <div class="card">
-            <div class="label">System Environment</div>
-            <div class="value" id="os" style="font-size: 1.1rem;">Connecting...</div>
-            <span class="sub-text">Uptime: <span id="uptime" style="color:#fff">0</span> Hours</span>
-        </div>
+        <div class="card"><div class="label">CPU Temp</div><div class="val"><span id="bot_cpu_temp">0</span>°C</div></div>
+        <div class="card"><div class="label">Bot OS</div><div class="val" style="font-size:1rem" id="bot_os">-</div></div>
+        <div class="card"><div class="label">Uptime</div><div class="val"><span id="bot_uptime">0</span> <span style="font-size:0.8rem">Hrs</span></div></div>
     </div>
-</div>
 
-<script>
-    async function updateDashboard() {
-        try {
-            // 1. ดึงสถิติบอทจากฐานข้อมูล (Supabase)
-            const statsRes = await fetch('/api/get-stats');
-            const s = await statsRes.json();
-            
-            document.getElementById('total_deleted').innerText = (s.total_deleted || 0).toLocaleString();
-            document.getElementById('server_count').innerText = (s.server_count || 0).toLocaleString();
-            document.getElementById('user_count').innerText = (s.user_count || 0).toLocaleString();
-
-            // 2. ดึงสเปกเครื่องจริงจาก Server
-            const sysRes = await fetch('/api/sys-info');
-            const d = await sysRes.json();
-
-            document.getElementById('os').innerText = d.os;
-            document.getElementById('cpuModel').innerText = d.cpuModel;
-            document.getElementById('cpuTemp').innerText = d.cpuTemp;
-            document.getElementById('memUsed').innerText = d.memUsed;
-            document.getElementById('memTotal').innerText = d.memTotal;
-            document.getElementById('memPercent').innerText = d.memPercent;
-            document.getElementById('memBar').style.width = d.memPercent + "%";
-            document.getElementById('uptime').innerText = d.uptime;
-
-        } catch (error) {
-            console.error("Dashboard Sync Error:", error);
+    <script>
+        async function sync() {
+            try {
+                const res = await fetch('/api/get-stats');
+                const s = await res.json();
+                document.getElementById('total_deleted').innerText = s.total_deleted.toLocaleString();
+                document.getElementById('server_count').innerText = s.server_count.toLocaleString();
+                document.getElementById('user_count').innerText = s.user_count.toLocaleString();
+                document.getElementById('bot_cpu_model').innerText = s.bot_cpu_model;
+                document.getElementById('bot_cpu_temp').innerText = s.bot_cpu_temp;
+                document.getElementById('bot_mem_used').innerText = s.bot_mem_used;
+                document.getElementById('bot_mem_total').innerText = s.bot_mem_total;
+                document.getElementById('memBar').style.width = s.bot_mem_percent + "%";
+                document.getElementById('bot_os').innerText = s.bot_os;
+                document.getElementById('bot_uptime').innerText = s.bot_uptime;
+            } catch(e) { console.error("Sync Error"); }
         }
-    }
-
-    // อัปเดตทุกๆ 5 วินาที
-    setInterval(updateDashboard, 5000);
-    updateDashboard(); // เรียกครั้งแรกทันที
-</script>
-
+        setInterval(sync, 5000); sync();
+    </script>
 </body>
 </html>
